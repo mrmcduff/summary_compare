@@ -11,3 +11,6 @@ cnn_token_cache/
 
 # Virtual environments
 .venv
+
+# Environment variables
+.env
