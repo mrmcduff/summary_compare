@@ -81,10 +81,7 @@ class Customizer:
         except:
             print("nothing on the disk, processing fresh")
 
-        if (
-            self.tokenized_datasets == None
-            or self.tokenized_datasets.num_rows == 0
-        ):
+        if self.tokenized_datasets == None or self.tokenized_datasets.num_rows == 0:
             print("i think there was nothing in the cache")
             self.tokenize_dataset()
         else:
