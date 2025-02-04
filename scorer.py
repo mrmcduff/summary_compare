@@ -9,6 +9,7 @@ from transformers import (
 from sentence_transformers import SentenceTransformer, util
 from typing import Dict, List
 import numpy as np
+import os
 
 
 class Scorer:
@@ -17,7 +18,9 @@ class Scorer:
         indexed_base_sentences: Dict[str, str],
         indexed_test_sentences: Dict[str, Dict[str, str]],
     ):
-        self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+        self.embedding_model = SentenceTransformer(
+            "all-MiniLM-L6-v2", token=os.getenv("HF_API_KEY")
+        )
         self.indexed_base_sentences = indexed_base_sentences
         self.indexed_test_sentences = indexed_test_sentences
         self.comparison_tensors = {}
@@ -51,7 +54,9 @@ class Scorer:
 
             total_sentences[model_name] = sentence_list
             embeddings_list = self.embedding_model.encode(
-                sentences=sentence_list, convert_to_numpy=True, normalize_embeddings=True
+                sentences=sentence_list,
+                convert_to_numpy=True,
+                normalize_embeddings=True,
             )
             self.comparison_tensors[model_name] = embeddings_list
 
@@ -63,7 +68,9 @@ class Scorer:
             for idx, row in enumerate(self.baseline_tensor):
                 man_cos_sim = self.manual_cosine_sim(row, tensor[idx])
                 self.model_scores[model_name].append(man_cos_sim)
-                print(f"In row {idx} of model {model_name}, found value of {man_cos_sim}")
+                print(
+                    f"In row {idx} of model {model_name}, found value of {man_cos_sim}"
+                )
         print(self.model_scores)
 
     def manual_cosine_sim(self, vec_a: List[float], vec_b: List[float]) -> float:
