@@ -21,15 +21,25 @@ def main():
     # tokenizer = AutoTokenizer.from_pretrained(model_name)
     # model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     generator = sg()
+    generator.set_sample_articles()
     basline_dict = generator.generate_summaries("facebook/bart-large-cnn")
+    print("baseline")
+    print(basline_dict)
     comparison_dict_1 = generator.generate_summaries("google/pegasus-xsum")
+    print("xsum dictionary")
+    print(comparison_dict_1)
     comparison_dict_2 = generator.generate_summaries("t5-small")
+    print("t5-small dictionary")
+    print(comparison_dict_2)
 
+
+    print("Finished generating samples")
     scoring_agent = Scorer(
         basline_dict,
         {"google/pegasus-xsum": comparison_dict_1, "t5-small": comparison_dict_2},
     )
-    scoring_agent.compute_comparison_tensors()
+    print("Preparing scores")
+    scoring_agent.compute_similarity_lists()
 
 
 if __name__ == "__main__":
