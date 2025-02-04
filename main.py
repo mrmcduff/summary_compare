@@ -4,6 +4,7 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from dotenv import load_dotenv
 from customizer import Customizer
 from scorer import Scorer
+from summary_generator import SummaryGenerator as sg
 # import os
 
 load_dotenv()
@@ -19,29 +20,14 @@ def main():
 
     # tokenizer = AutoTokenizer.from_pretrained(model_name)
     # model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-    sample_dict = {
-        "a": "I am fit as a fiddle",
-        "b": "It was freezing outside today",
-        "c": "Weather recently was on the cold side",
-        "d": "The Lakers made a blockbuster trade just before the deadline",
-        "e": "One is the loneliest number",
-    }
-    sample_dict_2 = {
-        "a": "I am in good health",
-        "b": "It froze today",
-        "c": "Recent weather was cold",
-        "d": "The lake busted blocks on a deadline",
-        "e": "A person is lonely",
-    }
-    sample_dict_3 = {
-        "a": "I fit fiddles",
-        "b": "It was cold",
-        "c": "Weather recently was beside itself",
-        "d": "The Lakers traded blocks at the deadline",
-        "e": "One is lonely",
-    }
+    generator = sg()
+    basline_dict = generator.generate_summaries("facebook/bart-large-cnn")
+    comparison_dict_1 = generator.generate_summaries("google/pegasus-xsum")
+    comparison_dict_2 = generator.generate_summaries("t5-small")
+
     scoring_agent = Scorer(
-        sample_dict, {"first_model": sample_dict_2, "second_model": sample_dict_3}
+        basline_dict,
+        {"google/pegasus-xsum": comparison_dict_1, "t5-small": comparison_dict_2},
     )
     scoring_agent.compute_comparison_tensors()
 

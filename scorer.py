@@ -1,11 +1,3 @@
-from transformers import (
-    AutoTokenizer,
-    AutoModelForSeq2SeqLM,
-    Seq2SeqTrainingArguments,
-    Seq2SeqTrainer,
-    DataCollatorForSeq2Seq,
-    pipeline,
-)
 from sentence_transformers import SentenceTransformer, util
 from typing import Dict, List
 import numpy as np
@@ -27,7 +19,7 @@ class Scorer:
         self.model_scores: Dict[str, List[float]] = {}
         self.compute_baseline()
         self.compute_comparison_tensors()
-        self.compute_similarity_lists()
+        # self.compute_similarity_lists()
 
     def compute_baseline(self):
         key_list = []
